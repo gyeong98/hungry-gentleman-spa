@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Smooth scroll for in-page navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Brand typography (you can swap fonts later) */
+@font-face {
+  font-family: "Antihero";
+  src: url("/fonts/Antihero.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+}
+
+/* A tiny helper for prettier scrollbars (optional) */
+* {
+  scrollbar-width: thin;
+}
+
+a, button {
+  cursor: pointer;
+}
