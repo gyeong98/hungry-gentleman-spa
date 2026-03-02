@@ -5,11 +5,17 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Brand typography (you can swap fonts later) */
 @font-face {
-  font-family: "Antihero";
-  src: url("/fonts/Antihero.ttf") format("truetype");
+  font-family: "SachieScript";
+  src: url("src/assets/fonts") format("truetype");
+  font-weight: 400;
+  font-style: normal;
   font-display: swap;
+}
+
+/* GUARANTEED brand class (bypasses Tailwind font utility generation) */
+.brand-title {
+  font-family: "SachieScript", ui-serif, Georgia, serif !important;
 }
 
 :root {

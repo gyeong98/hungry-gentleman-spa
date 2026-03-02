@@ -13,8 +13,10 @@ const NAV: { label: string; id: SectionId }[] = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const active = useScrollSpy(NAV.map((n) => n.id), 140);
 
+  /* Lock body scroll when menu is open */
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -22,82 +24,94 @@ export default function Navbar() {
     };
   }, [open]);
 
+  /* Show header background only after scroll */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* Close menu on resize (prevents stuck state) */
+  useEffect(() => {
+    const onResize = () => setOpen(false);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="bg-black/25 backdrop-blur supports-[backdrop-filter]:bg-black/20 border-b border-white/10">
-        <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => scrollToId("home")}
-            className="font-brand text-lg md:text-xl text-white tracking-wide"
-          >
-            The Hungry Gentleman.
-          </button>
-
-          <nav className="hidden md:flex items-center gap-8 text-sm tracking-[0.2em]">
-            {NAV.map((n) => (
-              <button
-                key={n.id}
-                type="button"
-                onClick={() => scrollToId(n.id)}
-                className={
-                  n.id === active
-                    ? "text-white"
-                    : "text-white/70 hover:text-white transition"
-                }
-              >
-                {n.label}
-              </button>
-            ))}
-            <a
-              href="https://www.instagram.com/thehungrygentleman/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-white/70 hover:text-white transition"
-              aria-label="Instagram"
+    <>
+      {/* HEADER */}
+      <header className="fixed inset-x-0 top-0 z-[1100]">
+        <div
+          className={[
+            "transition-all duration-200",
+            scrolled
+              ? "bg-black/25 backdrop-blur supports-[backdrop-filter]:bg-black/20 border-b border-white/10"
+              : "bg-transparent border-b border-transparent",
+          ].join(" ")}
+        >
+          <div className="w-full px-6 h-16 flex items-center justify-between">
+            {/* Brand */}
+            <button
+              type="button"
+              onClick={() => scrollToId("home")}
+              className="
+                brand-title
+                text-[1.6rem] md:text-[1.9rem]
+                text-[#f5efe6]
+                tracking-[-0.02em]
+                leading-none
+                cursor-pointer
+              "
             >
-              <img
-                src="/images/icons8-instagram-49.png"
-                alt=""
-                className="h-7 w-7"
-                draggable={false}
+              The Hungry Gentleman
+            </button>
+
+            {/* Hamburger / X toggle */}
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={() => setOpen((v) => !v)}
+              className="relative z-[1110] w-10 h-10 cursor-pointer"
+            >
+              {/* Top line */}
+              <motion.span
+                className="absolute left-1/2 top-1/2 h-[2px] w-8 bg-white"
+                initial={false}
+                animate={{
+                  rotate: open ? 45 : 0,
+                  y: open ? 0 : -6,
+                  x: "-50%",
+                }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
               />
-            </a>
-          </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            aria-label="Open menu"
-            onClick={() => setOpen(true)}
-            className="md:hidden p-2"
-          >
-            <span className="block h-[2px] w-8 bg-white" />
-            <span className="mt-2 block h-[2px] w-8 bg-white" />
-          </button>
+              {/* Bottom line */}
+              <motion.span
+                className="absolute left-1/2 top-1/2 h-[2px] w-8 bg-white"
+                initial={false}
+                animate={{
+                  rotate: open ? -45 : 0,
+                  y: open ? 0 : 6,
+                  x: "-50%",
+                }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+              />
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Fullscreen overlay menu */}
+      {/* FULLSCREEN OVERLAY MENU */}
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[999] bg-black"
+            className="fixed inset-0 z-[1090] bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div className="absolute right-6 top-5">
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-                className="rounded-full border border-white/20 px-4 py-2 text-white hover:bg-white/10 transition"
-              >
-                Close
-              </button>
-            </div>
-
             <div className="h-full flex items-center justify-center">
               <nav className="flex flex-col items-center gap-6 text-white text-xl tracking-[0.25em]">
                 {NAV.map((n) => (
@@ -108,17 +122,24 @@ export default function Navbar() {
                       setOpen(false);
                       scrollToId(n.id);
                     }}
-                    className="hover:opacity-80 transition"
+                    className={[
+                      "cursor-pointer transition",
+                      n.id === active
+                        ? "text-white"
+                        : "text-white/80 hover:text-white",
+                    ].join(" ")}
                   >
                     {n.label}
                   </button>
                 ))}
 
+                {/* Instagram */}
                 <a
                   href="https://www.instagram.com/thehungrygentleman/"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-4 hover:opacity-80 transition"
+                  className="cursor-pointer mt-6 hover:opacity-80 transition"
+                  aria-label="Instagram"
                 >
                   <img
                     src="/images/icons8-instagram-49.png"
@@ -132,6 +153,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }

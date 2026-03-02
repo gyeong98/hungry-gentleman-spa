@@ -5,9 +5,21 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        brand: ["Antihero", "ui-serif", "Georgia", "serif"],
+        brand: [
+          "SachieScript",
+          "ui-serif",
+          "Georgia",
+          "serif",
+        ],
         serif: ["ui-serif", "Georgia", "serif"],
-        sans: ["ui-sans-serif", "system-ui", "Segoe UI", "Roboto", "Helvetica", "Arial"],
+        sans: [
+          "ui-sans-serif",
+          "system-ui",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica",
+          "Arial",
+        ],
       },
       letterSpacing: {
         wide2: "0.2em",
