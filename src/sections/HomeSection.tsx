@@ -7,7 +7,7 @@ type HomeSectionProps = {
 };
 
 export default function HomeSection({
-  instagramUrl = "https://www.instagram.com/thehungrygentleman/",
+  // instagramUrl = "https://www.instagram.com/thehungrygentleman/",
 }: HomeSectionProps) {
   const images = useMemo(
     () => [
